@@ -1,7 +1,7 @@
 % motion correction / frame grouping / visualization
 clear;
 gcp;
-name = 'm123.3_d211129_s03_magnetFront_test_2p_00001.tif';
+name = '/Volumes/Seagate/MagnetSearch/Raw/OnePlane/m123.3/20211129/meas03/m123.3_d211129_s03_magnetFront_test_2p_00001.tif';
 
 tic; Y = read_file(name); toc; % read the file (optional, you can also pass the path in the function instead of Y)
 %Y = single(Y);                 % convert to single precision 
@@ -13,13 +13,13 @@ imagesc(mean(out,3));
 colorbar;
 %% set parameters (first try out rigid motion correction)
 
-options_rigid = NoRMCorreSetParms('d1',size(Y,1),'d2',size(Y,2),'bin_width',200,'max_shift',15,'us_fac',50,'init_batch',200, 'make_avi', true);
+options_rigid = NoRMCorreSetParms('d1',size(Y,1),'d2',size(Y,2),'bin_width',200,'max_shift',15,'us_fac',50,'init_batch',200,'plot_flag',true, 'make_avi', true);
 
 %% perform motion correction
 tic; [M1,shifts1,template1,options_rigid] = normcorre(Y,options_rigid); toc
 
 %% now try non-rigid motion correction (also in parallel)
-options_nonrigid = NoRMCorreSetParms('d1',size(Y,1),'d2',size(Y,2),'grid_size',[32,32],'mot_uf',4,'bin_width',200,'max_shift',15,'max_dev',3,'us_fac',50,'init_batch',200);
+options_nonrigid = NoRMCorreSetParms('d1',size(Y,1),'d2',size(Y,2),'grid_size',[32,32],'mot_uf',4,'bin_width',200,'max_shift',15,'max_dev',3,'us_fac',50,'init_batch',200,'plot_flag',true,'make_avi', true);
 tic; [M2,shifts2,template2,options_nonrigid] = normcorre_batch(Y,options_nonrigid); toc
 
 %% compute metrics
